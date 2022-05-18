@@ -1,0 +1,6 @@
+plotId treeId species lastAlivePeri whatOut
+504100 1 2 3 n
+504100 2 10 NA st0.9ba0.5
+504100 3 1 NA st1ba1
+504108 1 1 NA n
+504108 2 1 NA st1ba1

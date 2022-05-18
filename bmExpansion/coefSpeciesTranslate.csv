@@ -1,0 +1,48 @@
+#Specis,internalName,externalName
+Picea abies,PiAb,1
+Abies alba,AbAl,2
+Larix decidua,LaDe,3
+Pinus sylvestris,PiSy,4
+Pinus nigra,PiNi,5
+Pinus cembra,PiCe,6
+Pinus Strobus,PiSt,7
+Pseudotsuga menziesii,PsMe,8
+Coniferous,Coni,9
+Picea,PicX,9.1
+Abies,AbiX,9.2
+Larix,LarX,9.3
+Pinus,PinX,9.4
+Pinus mugo,PiMu,9.5
+Taxus bacata,TaBa,9.6
+Fagus sylavtica,FaSy,10
+Quercus,QueX,11
+Carpinus betulus,CaBe,12
+Fraxinus,FraX,13
+Acer,AceX,14
+Ulmus,UlmX,15
+Castanea sative,CaSa,16
+Robinia pseudoacacia,RoPs,17
+Sorbus,SorX,18
+Prunus,PruX,
+Prunus avium,PrAv,18.1
+Sorbus tormuinalis,SoTo,18.2
+Sorbus aucuparia,SoAu,18.4
+Betula,BetX,20
+Alnus glutinosa,AlGl,21
+Alnus incana,AlIn,22
+Tilia,TilX,23
+Populus tremula,PoTr,24.1
+Populus alba,PoAl,24.2
+Populus nigra,PoNi,25
+Populus,PopX,26
+Salix,SalX,27
+Broadleaved,BroX,
+Broadleaved Hardbwood,BrHX,31
+Juglans regia,JuRe,31.1
+Juglans nigra,JuNi,31.2
+Ostrya,OstX,31.3
+Malus,MalX,
+Pyrus,PyrX,31.4
+Broadleaved Softwood,BrSX,32
+Bushes,BusX,
+Alnus viridis,AlVi,33
