@@ -1,6 +1,6 @@
 dirOut <- "./dat/"
 dirMeteo <- "/dat/meteo/zamg/spartacus/month/"
-fileAltiMeteo <- "/dat/meteo/zamg/spartacus/dem.nc"
+fileAltiMeteo <- "/dat/meteo/zamg/spartacus/SPARTACUS-MONTHLY_DEM_MASK.nc"
 fileInvPoint <- "./dat/posInv.txt"
 timeRange <- c(1981, 2020)
 
@@ -19,7 +19,7 @@ L$kiter <- sub("DIROUT", dirOut, L$kiter, fixed=TRUE)
 L$kiter <- sub("WEATHERDATAIN", tf, L$kiter, fixed=TRUE)
 L$kiter <- sub("fileInvPoint", fileInvPoint, L$kiter, fixed=TRUE)
 
-nn <- ncvar_get(nc_open(fileAltiMeteo), "Band1")
+nn <- ncvar_get(nc_open(fileAltiMeteo), "dem")
 for(i in seq_len(nrow(L))) {
   FNS <- list.files(dirMeteo, paste0("SPARTACUS-MONTHLY_", L$what[i], "_\\d+.nc"))
   . <- as.integer(regmatches(FNS, regexpr("\\d{4}", FNS)))

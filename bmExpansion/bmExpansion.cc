@@ -21,7 +21,8 @@
 
 namespace bmExp {
 
-  enum class compartment {leaf=0, branch=1, stem=2, coarseRoot=3, fineRoot=4};
+  enum class compartment {leaf=0, branch=1, stem=2, coarseRoot=3, fineRoot=4,
+  bark=5};
   
   class bmexp {
   public:
@@ -115,6 +116,20 @@ namespace {
     return(ret);
   }
 
+  //Rindenanteil Roessler
+  double ffRindenanteil(const std::vector<double> &c, const double& d, const double& h, const double& hKa __attribute__((unused))) {
+    double ret=std::numeric_limits<double>::quiet_NaN();
+    if(c.size()==2) {
+      double D = d;
+      if(h < 1.3) D += h; else D += 1.3;
+      if(D>0.) {
+	double d2 = pow(D, 2);
+	ret = (d2 - pow(D - c[0] - c[1] * D, 2)) / d2;
+      } else {ret = 1.;}
+    }
+    return(ret);
+  }
+
 }
 
 namespace bmExp {
@@ -124,6 +139,7 @@ namespace bmExp {
     functions.push_back(&ffLog); //1
     functions.push_back(&ffAllometric); //2
     functions.push_back(&ffAlbrektson); //3
+    functions.push_back(&ffRindenanteil); //4
   }
 
   double bmexp::g(const compartment &compart, const std::string &species
@@ -163,7 +179,7 @@ namespace bmExp {
 
   void bmexp::i(const std::string &species
 		, const std::vector<std::string> &coefNames) {
-    assert(coefNames.size() == 5);
+    assert(coefNames.size() == 6);
     coefNameFromSpecies[species] = coefNames;
   }
 
@@ -188,7 +204,7 @@ namespace bmExp {
 	  } else {coefNames.push_back(item);}
 	  ++n;
 	}
-	if(coefNames.size()==5) {
+	if(coefNames.size()==6) {
 	  bm.i(species, coefNames);
 	}
       }
@@ -278,7 +294,7 @@ void calcBm(string nfin, string nfout) {
   }
   infile.close();
 
-  fout << "plotId treeId species whatOut year Nrepjeha nout alive d bmLeaf bmBranch bmStem bmCorseRoot bmFineRoot bmStump bmSeed" << endl;
+  fout << "plotId treeId species whatOut year Nrepjeha Grepjeha nout gout alive d bmLeaf bmBranch bmStem bmCoarseRoot bmFineRoot bmStump bmSeed bmBark" << endl;
 
   while(getline(fin, line)) {
     if(line.size() > 0 && line[0] != '#') { //Skip comment lines
@@ -289,13 +305,16 @@ void calcBm(string nfin, string nfout) {
       string whatOut;
       int year;
       double Nrepjeha;
+      double Grepjeha;
       double BHD;
       double HT;
       double KA;
       double alive;
       double nout;
-      linestream >> plotId >> treeId >> speciesE >> whatOut >> year >> Nrepjeha >> BHD >> HT >> KA >> alive >> nout;
+      double gout;
+      linestream >> plotId >> treeId >> speciesE >> whatOut >> year >> Nrepjeha >> Grepjeha >> BHD >> HT >> KA >> alive >> nout >> gout;
       if(KA < 0.) {KA = .5 * HT;}
+      
       string species = "PiAb";
       auto speciesSearch = speciesTranslate.find(speciesE);
       if (speciesSearch != speciesTranslate.end()) {
@@ -303,7 +322,7 @@ void calcBm(string nfin, string nfout) {
       } else {
 	cerr << "Species: " << speciesE << " Not found!\n";
       }
-      
+
       double BaumVol =  bmexp.g(bmExp::compartment::stem, species, BHD, HT, KA);
       if(BHD <= 0 & HT <= 1.3) BaumVol = pow(HT, 3) * M_PI / 3.;
       if(BaumVol != BaumVol | BaumVol == 0) BaumVol = 0.5 * pow(BHD/200, 2) * M_PI * HT;
@@ -327,13 +346,19 @@ void calcBm(string nfin, string nfout) {
       double bmStump = rDens * pow((BHD+min(1.3,HT))/200., 2) * M_PI * min(0.3, 0.5 * HT);
       if(bmStump > bmStem) {bmStump = bmStem;}
       bmStem -= bmStump;
+      double shareBark = bmexp.g(bmExp::compartment::bark, species, BHD, HT, KA);
+      double bmBark = shareBark * (bmStem + bmStump);
+      bmStem *= 1. - shareBark;
+      bmStump *= 1. - shareBark;
       fout << plotId
 	   << " " << treeId
 	   << " " << species
 	   << " " << whatOut
 	   << " " << year
 	   << " " << Nrepjeha
+	   << " " << Grepjeha
 	   << " " << nout
+	   << " " << gout
 	   << " " << alive
 	   << " " << BHD
 	   << " " << bmLeaf
@@ -343,6 +368,7 @@ void calcBm(string nfin, string nfout) {
 	   << " " << bmFineRoot
 	   << " " << bmStump
 	   << " " << bmSeed
+	   << " " << bmBark
 	   << endl;
     }
   }

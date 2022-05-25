@@ -1,48 +1,48 @@
-#Specis,leaf,branch,stem,coarseRoot,fineRoot,raumdichte,stem2Corseroot,leaf2Fineroot,leaf2seed
-PiAb,PiAb,PiAb,PiAb,,,362,0.2,.3,0.02,#Picea abies
-AbAl,PiAb,PiAb,AbAl,,,361,0.2,.3,0.02,#Abies alba
-LaDe,LaDe,LaDe,LaDe,,,477,0.2,1,0.07,#Larix decidua
-PiSy,PiSy,PiSy,PiSy,,,450,0.2,.5,0.05,#Pinus sylvestris
-PiNi,PiSy,PiSy,PiNi,,,494,0.2,.5,0.05,#Pinus nigra
-PiCe,PiSy,PiSy,PiCe,,,364,0.2,.4,0.05,#Pinus cembra
-PiSt,PiSy,PiSy,PiSy,,,337,0.2,.4,0.05,#Pinus Strobus
-PsMe,PiAb,PiAb,PiAb,,,414,0.2,.3,0.02,#Pseudotsuga menziesii
-Coni,PiAb,PiAb,PiAb,,,362,0.2,.3,0.02,#Coniferous
-PicX,PiAb,PiAb,PiAb,,,362,0.2,.3,0.02,#Picea
-AbiX,PiAb,PiAb,AbAl,,,361,0.2,.3,0.02,#Abies
-LarX,LaDe,LaDe,LaDe,,,477,0.2,1,0.07,#Larix
-PinX,PiSy,PiSy,PiSy,,,450,0.2,.5,0.05,#Pinus
-PiMu,PiSy,PiSy,PiSy,,,450,0.2,.5,0.05,#Pinus mugo
-TaBa,PiAb,PiAb,AbAl,,,584,0.2,.3,0.04,#Taxus bacata
-FaSy,FaSy,FaSy,FaSy,,,561,0.2,1,0.07,#Fagus sylavtica
-QueX,QueX,QueX,QueX,,,579,0.2,1,0.07,#Quercus
-CaBe,FaSy,CaBe,CaBe,,,609,0.2,1,0.07,#Carpinus betulus
-FraX,QueX,FraX,FraX,,,582,0.2,1,0.07,#Fraxinus
-AceX,FaSy,BrHX,AceX,,,521,0.2,1,0.07,#Acer
-UlmX,FaSy,BrHX,UlmX,,,558,0.2,1,0.07,#Ulmus
-CaSa,QueX,BrHX,FaSy,,,496,0.2,1,0.07,#Castanea sative
-RoPs,QueX,BrHX,CaBe,,,644,0.2,1,0.07,#Robinia pseudoacacia
-SorX,QueX,BrHX,CaBe,,,505,0.2,1,0.07,#Sorbus
-PruX,FaSy,BrHX,CaBe,,,491,0.2,1,0.07,#Prunus
-PrAv,FaSy,BrHX,FraX,,,491,0.2,1,0.07,#Prunus avium
-SoTo,QueX,BrHX,FraX,,,588,0.2,1,0.07,#Sorbus tormuinalis
-SoAu,QueX,BrHX,FraX,,,505,0.2,1,0.07,#Sorbus aucuparia
-BetX,QueX,BrHX,BetX,,,551,0.2,1,0.07,#Betula
-AlGl,FaSy,BrSX,AlGl,,,424,0.2,1,0.07,#Alnus glutinosa
-AlIn,QueX,BrSX,AlGl,,,424,0.2,1,0.07,#Alnus incana
-TilX,FaSy,BrSX,AceX,,,444,0.2,1,0.07,#Tilia
-PoTr,QueX,PopX,PopX,,,396,0.2,1,0.07,#Populus tremula
-PoAl,QueX,PopX,PopX,,,359,0.2,1,0.07,#Populus alba
-PoNi,FaSy,PopX,PoNi,,,359,0.2,1,0.07,#Populus nigra
-PopX,FaSy,PopX,PopX,,,359,0.2,1,0.07,#Populus
-SalX,QueX,BrSX,PalX,,,470,0.2,1,0.07,#Salix
-BroX,FaSy,BrHX,FaSy,,,561,0.2,1,0.07,#Broadleaved
-BrHX,FaSy,BrHX,FaSy,,,561,0.2,1,0.07,#Broadleaved Hardbwood
-JuRe,QueX,BrHX,QueX,,,552,0.2,1,0.07,#Juglans regia
-JuNi,QueX,BrHX,QueX,,,489,0.2,1,0.07,#Juglans nigra
-OstX,QueX,BrHX,CaBa,,,609,0.2,1,0.07,#Ostrya
-MalX,QueX,BrHX,QueX,,,599,0.2,1,0.07,#Malus
-PyrX,QueX,BrHX,QueX,,,599,0.2,1,0.07,#Pyrus
-BrSX,QueX,BrSX,PopX,,,470,0.2,1,0.07,#Broadleaved Softwood
-BusX,QueX,BrHX,CaBe,,,561,0.2,1,0.07,#Bushes
-AlVi,QueX,BrSX,CaBe,,,424,0.2,1,0.07,#Alnus viridis
+#Specis,leaf,branch,stem,coarseRoot,fineRoot,raumdichte,stem2Corseroot,leaf2Fineroot,leaf2seed,barkShare
+PiAb,PiAb,PiAb,PiAb,,,362,0.2,.3,0.02,PiAb,#Picea abies
+AbAl,PiAb,PiAb,AbAl,,,361,0.2,.3,0.02,PiAb,#Abies alba
+LaDe,LaDe,LaDe,LaDe,,,477,0.2,1,0.07,LaDe,#Larix decidua
+PiSy,PiSy,PiSy,PiSy,,,450,0.2,.5,0.05,LaDe,#Pinus sylvestris
+PiNi,PiSy,PiSy,PiNi,,,494,0.2,.5,0.05,LaDe,#Pinus nigra
+PiCe,PiSy,PiSy,PiCe,,,364,0.2,.4,0.05,LaDe,#Pinus cembra
+PiSt,PiSy,PiSy,PiSy,,,337,0.2,.4,0.05,LaDe,#Pinus Strobus
+PsMe,PiAb,PiAb,PiAb,,,414,0.2,.3,0.02,LaDe,#Pseudotsuga menziesii
+Coni,PiAb,PiAb,PiAb,,,362,0.2,.3,0.02,PiAb,#Coniferous
+PicX,PiAb,PiAb,PiAb,,,362,0.2,.3,0.02,PiAb,#Picea
+AbiX,PiAb,PiAb,AbAl,,,361,0.2,.3,0.02,PiAb,#Abies
+LarX,LaDe,LaDe,LaDe,,,477,0.2,1,0.07,LaDe,#Larix
+PinX,PiSy,PiSy,PiSy,,,450,0.2,.5,0.05,LaDe,#Pinus
+PiMu,PiSy,PiSy,PiSy,,,450,0.2,.5,0.05,LaDe,#Pinus mugo
+TaBa,PiAb,PiAb,AbAl,,,584,0.2,.3,0.04,PiAb,#Taxus bacata
+FaSy,FaSy,FaSy,FaSy,,,561,0.2,1,0.07,PiAb,#Fagus sylavtica
+QueX,QueX,QueX,QueX,,,579,0.2,1,0.07,PiAb,#Quercus
+CaBe,FaSy,CaBe,CaBe,,,609,0.2,1,0.07,PiAb,#Carpinus betulus
+FraX,QueX,FraX,FraX,,,582,0.2,1,0.07,PiAb,#Fraxinus
+AceX,FaSy,BrHX,AceX,,,521,0.2,1,0.07,PiAb,#Acer
+UlmX,FaSy,BrHX,UlmX,,,558,0.2,1,0.07,PiAb,#Ulmus
+CaSa,QueX,BrHX,FaSy,,,496,0.2,1,0.07,PiAb,#Castanea sative
+RoPs,QueX,BrHX,CaBe,,,644,0.2,1,0.07,PiAb,#Robinia pseudoacacia
+SorX,QueX,BrHX,CaBe,,,505,0.2,1,0.07,PiAb,#Sorbus
+PruX,FaSy,BrHX,CaBe,,,491,0.2,1,0.07,PiAb,#Prunus
+PrAv,FaSy,BrHX,FraX,,,491,0.2,1,0.07,PiAb,#Prunus avium
+SoTo,QueX,BrHX,FraX,,,588,0.2,1,0.07,PiAb,#Sorbus tormuinalis
+SoAu,QueX,BrHX,FraX,,,505,0.2,1,0.07,PiAb,#Sorbus aucuparia
+BetX,QueX,BrHX,BetX,,,551,0.2,1,0.07,PiAb,#Betula
+AlGl,FaSy,BrSX,AlGl,,,424,0.2,1,0.07,PiAb,#Alnus glutinosa
+AlIn,QueX,BrSX,AlGl,,,424,0.2,1,0.07,PiAb,#Alnus incana
+TilX,FaSy,BrSX,AceX,,,444,0.2,1,0.07,PiAb,#Tilia
+PoTr,QueX,PopX,PopX,,,396,0.2,1,0.07,PiAb,#Populus tremula
+PoAl,QueX,PopX,PopX,,,359,0.2,1,0.07,PiAb,#Populus alba
+PoNi,FaSy,PopX,PoNi,,,359,0.2,1,0.07,PiAb,#Populus nigra
+PopX,FaSy,PopX,PopX,,,359,0.2,1,0.07,PiAb,#Populus
+SalX,QueX,BrSX,PalX,,,470,0.2,1,0.07,PiAb,#Salix
+BroX,FaSy,BrHX,FaSy,,,561,0.2,1,0.07,PiAb,#Broadleaved
+BrHX,FaSy,BrHX,FaSy,,,561,0.2,1,0.07,PiAb,#Broadleaved Hardbwood
+JuRe,QueX,BrHX,QueX,,,552,0.2,1,0.07,PiAb,#Juglans regia
+JuNi,QueX,BrHX,QueX,,,489,0.2,1,0.07,PiAb,#Juglans nigra
+OstX,QueX,BrHX,CaBa,,,609,0.2,1,0.07,PiAb,#Ostrya
+MalX,QueX,BrHX,QueX,,,599,0.2,1,0.07,PiAb,#Malus
+PyrX,QueX,BrHX,QueX,,,599,0.2,1,0.07,PiAb,#Pyrus
+BrSX,QueX,BrSX,PopX,,,470,0.2,1,0.07,PiAb,#Broadleaved Softwood
+BusX,QueX,BrHX,CaBe,,,561,0.2,1,0.07,PiAb,#Bushes
+AlVi,QueX,BrSX,CaBe,,,424,0.2,1,0.07,PiAb,#Alnus viridis
