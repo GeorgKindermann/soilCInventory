@@ -120,7 +120,7 @@ i <- c("BHD", "HOEHE", "KRONHO")
 
 Ds <- do.call(rbind, lapply(unname(split(.[c("plotId", "treeId", "peri", "BART", "living")], paste(.$plotId, .$treeId))), function(x) {
   data.frame(x[c("plotId", "treeId")][1,], species = tail(x$BART, 1)
-           , lastAlivePeri = x$peri[match(-1L, diff(x$living))]
+           , lastAlivePeri = if(x$living[1]) x$peri[match(-1L, diff(x$living))] else x$peri[1] - 1
            , whatOut = ".95st.8ba")
   }))
 write.table(Ds, xzfile("speciesInv.txt.xz"), quote = FALSE, row.names = FALSE, col.names = TRUE)
