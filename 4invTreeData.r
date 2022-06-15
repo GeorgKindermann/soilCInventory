@@ -38,6 +38,11 @@ gpStart <- pmin(gpStart, as.POSIXct(paste0(year, "-6-1")), na.rm=TRUE)
 gpEnd <- pmax(gpEnd, as.POSIXct(paste0(year, "-9-1")), na.rm=TRUE)
 as.numeric(year) + pmin(1 ,pmax(0, as.numeric(difftime(x, gpStart, units="days")) / as.numeric(difftime(gpEnd, gpStart, units="days"))))
 })
+Dd$yearC <- sapply(Dd$date, \(x) {
+  as.numeric(format(x,"%Y")) + #Get Year an add
+    (as.numeric(format(x,"%j")) - 0.5) / #Day of the year divided by
+    as.numeric(format(as.Date(paste0(format(x,"%Y"), "-12-31")),"%j")) #days of the year
+})
 #Weight with days in month?
 . <- list(t = round(rowMeans(aperm(Dw[,,,"t"], 3:1), dims=2), 1)
          , p = round(rowSums(aperm(Dw[,,,"p"], 3:1), dims=2))
@@ -47,7 +52,7 @@ as.numeric(year) + pmin(1 ,pmax(0, as.numeric(difftime(x, gpStart, units="days")
 write.table(., OUTfileYassoWetter, quote = FALSE, row.names = TRUE, col.names = TRUE)
 rm(Dw)
 
-obsE <- list2env(split(Dd[c("peri", "year")], Dd$plotId))
+obsE <- list2env(split(Dd[c("peri", "year", "yearC")], Dd$plotId))
 treeE <- list2env(split(Dt, Dt$plotId))
 rm(Dd, Dt)
 
@@ -55,35 +60,35 @@ rm(Dd, Dt)
   obs <- get(plotId, obsE)
   obs <- obs[order(obs$year),]
   trees <- get0(plotId, treeE)
-  yearStart <- ceiling(min(obs$year))
-  yearEnd <- floor(max(obs$year))
+  yearStart <- ceiling(max(min(obs$year), min(obs$yearC)))
+  yearEnd <- floor(min(max(obs$year), max(obs$yearC)))
   if(yearEnd < yearStart) yearEnd <- yearStart <- round(mean(obs$year))
   years <- yearStart:yearEnd
   if(nrow(obs) > 1 & !is.null(trees)) {
     . <- do.call(rbind, lapply(split(trees, trees$treeId), function(tree) {
       . <- merge(obs, tree[c("peri", "nrep", "grep", "d", "h", "hka", "alive")], all.x=TRUE)
-      OUTn <- .$nrep[tail(which(diff(is.na(.$nrep)) == 1), 1)]
-      OUTg <- .$nrep[tail(which(diff(is.na(.$grep)) == 1), 1)]
+      .$REFn <- .$nrep
+      .$REFg <- .$grep
       .$nrep[is.na(.$nrep)] <- 0
       .$grep[is.na(.$grep)] <- 0
-      for(COL in c("d", "h", "hka", "alive")) {
+      for(COL in c("d", "h", "hka", "alive", "REFn", "REFg")) {
         i <- diff(is.na(.[[COL]]))
         j <- which(i == -1)
         .[[COL]][j] <- .[[COL]][j+1]
         j <- which(i == 1)
         .[[COL]][j+1] <- .[[COL]][j]
       }
-      transform( data.frame(plotId
-                          , treeId = tree$treeId[1]
-                          , year = years
-                          , nrep = approxfun(.$year, .$nrep)(years)
-                          , grep = approxfun(.$year, .$grep)(years)
-                          , d = approxfun(.$year, .$d, rule=2)(years)
-                          , h = approxfun(.$year, .$h, rule=2)(years)
-                          , hka = approxfun(.$year, .$hka, rule=2)(years)
-                          , alive = approxfun(.$year, .$alive, rule=2)(years))
-              , nout = if(length(OUTn) > 0) rev(diff(c(0, pmin(OUTn, cumsum(diff(c(0, rev(nrep)))))))) else 0
-              , gout = if(length(OUTg) > 0) rev(diff(c(0, pmin(OUTg, cumsum(diff(c(0, rev(grep)))))))) else 0
+      data.frame(plotId
+               , treeId = tree$treeId[1]
+               , year = years
+               , nrep = approxfun(.$yearC, .$nrep)(years)
+               , grep = approxfun(.$yearC, .$grep)(years)
+               , d = approxfun(.$year, .$d, rule=2)(years)
+               , h = approxfun(.$year, .$h, rule=2)(years)
+               , hka = approxfun(.$year, .$hka, rule=2)(years)
+               , alive = approxfun(.$yearC, .$alive, rule=2)(years)
+               , nout = pmax(0, diff(approxfun(.$yearC, .$REFn, rule=2)(c(years[1], years+1)) - approxfun(.$yearC, .$nrep, rule=2)(c(years[1], years+1))))
+               , gout = pmax(0, diff(approxfun(.$yearC, .$REFg, rule=2)(c(years[1], years+1)) - approxfun(.$yearC, .$grep, rule=2)(c(years[1], years+1))))
                 )
     }))
   } else {
@@ -96,7 +101,7 @@ rm(Dd, Dt)
                     , nout = 0, gout = 0)
       }
   }
-  . <- .[.$nrep > 0,]
+  . <- .[.$nrep > 0 | .$grep > 0 | .$nout > 0 | .$gout > 0,]
   i <- years[!years %in% unique(.$year)]
   if(length(i) > 0) {
     . <- rbind(., data.frame(plotId, treeId = NA, year = i, nrep = 0, grep = 0
