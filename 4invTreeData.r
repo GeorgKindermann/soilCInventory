@@ -1,6 +1,7 @@
 OUTfileBm <- "./dat/bm2soil.txt"
 OUTfileYassoWetter <- "./dat/yassoWetter.txt"
-pathInvDat <- "./dat/"
+#pathInvDat <- "./dat/"
+pathInvDat <- "./2invData/"
 fileTemperature <- "./dat/tmInvPkt.txt"
 filePrecipitation <- "./dat/rrInvPkt.txt"
 
@@ -16,10 +17,10 @@ Dw <- array(c(Dwt[order(Dwt[,3], Dwt[,1]), 2], Dwp[order(Dwp[,3], Dwp[,1]), 2])
          , list(month=1:12, year=.Y, plotId=.Id, what=c("t", "p")))
 rm(Dwt, Dwp, .Id, .Y, fileTemperature, filePrecipitation)
 
-Dd <- read.table(paste0(pathInvDat, "dateInv.txt"), header=TRUE)
+Dd <- read.table(paste0(pathInvDat, "dateInv.txt.xz"), header=TRUE)
 Dd$date <- as.Date(Dd$date)
-Ds <- read.table(paste0(pathInvDat, "speciesInv.txt"), header=TRUE)
-Dt <- read.table(paste0(pathInvDat, "treeInv.txt"), header=TRUE)
+Ds <- read.table(paste0(pathInvDat, "speciesInv.txt.xz"), header=TRUE)
+Dt <- read.table(paste0(pathInvDat, "treeInv.txt.xz"), header=TRUE)
 Dt$alive <- 1
 . <- c("plotId","treeId")
 Dt$alive[Dt$peri > Ds$lastAlivePeri[match(do.call(paste, Dt[.]), do.call(paste, Ds[.]))]] <- 0
@@ -38,6 +39,7 @@ gpStart <- pmin(gpStart, as.POSIXct(paste0(year, "-6-1")), na.rm=TRUE)
 gpEnd <- pmax(gpEnd, as.POSIXct(paste0(year, "-9-1")), na.rm=TRUE)
 as.numeric(year) + pmin(1 ,pmax(0, as.numeric(difftime(x, gpStart, units="days")) / as.numeric(difftime(gpEnd, gpStart, units="days"))))
 })
+
 Dd$yearC <- sapply(Dd$date, \(x) {
   as.numeric(format(x,"%Y")) + #Get Year an add
     (as.numeric(format(x,"%j")) - 0.5) / #Day of the year divided by

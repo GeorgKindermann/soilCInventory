@@ -1,8 +1,9 @@
 dirOut <- "./dat/"
 dirMeteo <- "/dat/meteo/zamg/spartacus/month/"
 fileAltiMeteo <- "/dat/meteo/zamg/spartacus/SPARTACUS-MONTHLY_DEM_MASK.nc"
-fileInvPoint <- "./dat/posInv.txt"
-timeRange <- c(1981, 2020)
+#fileInvPoint <- "./dat/posInv.txt"
+fileInvPoint <- "./2invData/posInv.txt"
+timeRange <- c(1961, 2021)
 
 library(Rcpp)
 library(ncdf4)

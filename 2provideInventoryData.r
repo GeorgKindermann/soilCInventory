@@ -1,7 +1,7 @@
 pathInvDat <- "./dat/"
 
 invPos <- read.table(header = TRUE, text="
-x      y      nn  id
+x      y      nn  plotId
 413573 274537 456 504100
 413773 274537 478 504108")
 write.table(invPos, paste0(pathInvDat, "posInv.txt"), quote = FALSE, row.names = FALSE, col.names = FALSE)

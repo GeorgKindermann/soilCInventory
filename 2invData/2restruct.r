@@ -123,9 +123,8 @@ Ds <- do.call(rbind, lapply(unname(split(.[c("plotId", "treeId", "peri", "BART",
            , lastAlivePeri = if(x$living[1]) x$peri[match(-1L, diff(x$living))] else x$peri[1] - 1
            , whatOut = ".95st.8ba")
   }))
-write.table(Ds, xzfile("speciesInv.txt.xz"), quote = FALSE, row.names = FALSE, col.names = TRUE)
 
-write.table(data.frame(.[c("plotId", "treeId", "peri", "nrep", "grep")], d=.$BHD, h=.$HOEHE, hka=.$KRONHO), xzfile("treeInv.txt.xz"), quote = FALSE, row.names = FALSE, col.names = TRUE)
+Dt <- data.frame(.[c("plotId", "treeId", "peri", "nrep", "grep")], d=.$BHD, h=.$HOEHE, hka=.$KRONHO)
 
 
 COL <- c("peri", "RW", "HW", "PB", "DATUM", "KG_WALD")
@@ -151,7 +150,20 @@ regmatches(.$DATUM, i) <- paste0(19 + (as.integer(j) < 60), j)
 
 . <- .[ave(.$KG_WALD>0, .$plotId, FUN=any),]
 
-write.table(data.frame(.["plotId"], date=.$DATUM, .["peri"], share=.$KG_WALD/10), xzfile("dateInv.txt.xz"), quote = FALSE, row.names = FALSE, col.names = TRUE)
+s <- do.call(paste, .[c("peri", "DATUM", "plotId")])
+i <- which(duplicated(s))
+.[s %in% s[i],]
+. <- .[-i,]
+
+Dd <- data.frame(.["plotId"], date=.$DATUM, .["peri"], share=.$KG_WALD/10)
+
+i <- intersect(unique(Ds$plotId), unique(Dd$plotId))
+
+write.table(Ds[Ds$plotId %in% i,], xzfile("speciesInv.txt.xz"), quote = FALSE, row.names = FALSE, col.names = TRUE)
+
+write.table(Dt[Dt$plotId %in% i,], xzfile("treeInv.txt.xz"), quote = FALSE, row.names = FALSE, col.names = TRUE)
+
+write.table(Dd[Dd$plotId %in% i,], xzfile("dateInv.txt.xz"), quote = FALSE, row.names = FALSE, col.names = TRUE)
 
 
 
