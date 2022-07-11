@@ -127,7 +127,31 @@ Ds <- do.call(rbind, lapply(unname(split(.[c("plotId", "treeId", "peri", "BART",
 Dt <- data.frame(.[c("plotId", "treeId", "peri", "nrep", "grep")], d=.$BHD, h=.$HOEHE, hka=.$KRONHO)
 
 
-COL <- c("peri", "RW", "HW", "PB", "DATUM", "KG_WALD")
+COL <- c("peri", "RW", "HW", "PB", "T", "B", "BA", "KG_WALD")
+
+#B: (peri 3-4) Betriebsart: Hochwald - 1..Wirtschaftswald, 3..Schutzwald im Ertrag, 4..Schutzwald ausser Ertrag, 5..Holzboden ausser Ertrag; Ausschlagwald - 6..Land-Ausschlagwald, 7..Auen-Ausschlagwald, 8..Holzboden ausser Ertrag
+
+#BA: (peri > 4) Betriebsart: ABCD; A=1..Hochwald, A=2..Ausschlagwald, A=3..(peri>8) Nichtwald (Codierungen für BCD haben andere Bedeutung), B=0..Keine Zuordnung möglich, B=1..Land-Ausschlagwald, B=2..Auen-Ausschlagwald, C=1..Wirtschaftswald, C=2..Schutzwald im Ertrag, C=3..Schutzwald außer Ertrag, D=1..Holzboden, D=2..Holzboden außer Ertrag, D=3..Strauchfläche, D=4..unbegehbarer Schutzwald außer Ertrag
+
+. <- do.call(rbind, lapply(list.files(pattern="^tfl\\d+\\.csv\\.bz2$"), function(FNAME) {
+  x <- read.table(FNAME, sep="|", header = TRUE)
+  names(x)[1] <- substring(names(x)[1], 3)
+  x <- x[-1,]
+  x <- type.convert(x, as.is=TRUE)
+  x$peri <- as.integer(sub("^tfl(\\d+).*", "\\1", FNAME))
+  x[setdiff(COL, names(x))] <- NA
+  x[COL]
+}))
+.$B[.$peri > 4] <- NA
+.$sur <- .$B %in% c(1, 3, 6, 7) |
+.$BA %in% c(1011, 1021, 2111, 2211) | 
+(.$peri > 8 & .$BA %in% c(1031, 1013, 1023, 1033, 2113, 2213))
+.$plotId <- do.call(paste, c(.[c("RW", "HW", "PB")], sep="_"))
+. <- aggregate(KG_WALD ~ peri + plotId + T, .[.$sur,], mean)
+Da <- aggregate(cbind(share = KG_WALD/10) ~ peri + plotId, .[.$KG_WALD > 0,], sum)
+
+
+COL <- c("peri", "RW", "HW", "PB", "DATUM")
 
 . <- do.call(rbind, lapply(list.files(pattern="^prf\\d+\\.csv\\.bz2$"), function(FNAME) {
   x <- read.table(FNAME, sep="|", header = TRUE)
@@ -145,25 +169,37 @@ j <- regmatches(.$DATUM, i)
 regmatches(.$DATUM, i) <- paste0(19 + (as.integer(j) < 60), j)
 .$DATUM <- as.Date(.$DATUM, "%d.%m.%Y")
 
+#Remove intermediate points
+. <- .[(.$RW + .$HW) %% 2 == 0,]
+. <- .[.$PB %in% c(0,8,16,24),]
+
 .$plotId <- do.call(paste, c(.[c("RW", "HW", "PB")], sep="_"))
 .[c("RW", "HW", "PB")] <- NULL
 
-. <- .[ave(.$KG_WALD>0, .$plotId, FUN=any),]
-
-s <- do.call(paste, .[c("peri", "DATUM", "plotId")])
+s <- paste(.$peri, .$plotId)
 i <- which(duplicated(s))
 .[s %in% s[i],]
 . <- .[-i,]
 
-Dd <- data.frame(.["plotId"], date=.$DATUM, .["peri"], share=.$KG_WALD/10)
+. <- merge(., Da)
 
-i <- intersect(unique(Ds$plotId), unique(Dd$plotId))
+tt <- table(.$plotId)
+. <- .[.$plotId %in% names(tt)[tt > 1],]
 
-write.table(Ds[Ds$plotId %in% i,], xzfile("speciesInv.txt.xz"), quote = FALSE, row.names = FALSE, col.names = TRUE)
+Dd <- data.frame(.["plotId"], .["peri"], date=.$DATUM, .["share"])
 
-write.table(Dt[Dt$plotId %in% i,], xzfile("treeInv.txt.xz"), quote = FALSE, row.names = FALSE, col.names = TRUE)
+i <- match(paste(Dt$plotId, Dt$peri), paste(Dd$plotId, Dd$peri))
+j <- which(!is.na(i))
+Dt <- Dt[j,]
+Dt[, c("nrep", "grep")] <- Dt[, c("nrep", "grep")] / Dd$share[i[j]]
 
-write.table(Dd[Dd$plotId %in% i,], xzfile("dateInv.txt.xz"), quote = FALSE, row.names = FALSE, col.names = TRUE)
+Ds <- Ds[paste(Ds$plotId, Ds$treeId) %in% unique(paste(Dt$plotId, Dt$treeId)),]
+
+write.table(Ds, xzfile("speciesInv.txt.xz"), quote = FALSE, row.names = FALSE, col.names = TRUE)
+
+write.table(Dt, xzfile("treeInv.txt.xz"), quote = FALSE, row.names = FALSE, col.names = TRUE)
+
+write.table(Dd, xzfile("dateInv.txt.xz"), quote = FALSE, row.names = FALSE, col.names = TRUE)
 
 
 

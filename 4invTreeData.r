@@ -69,16 +69,32 @@ rm(Dd, Dt)
   if(nrow(obs) > 1 & !is.null(trees)) {
     . <- do.call(rbind, lapply(split(trees, trees$treeId), function(tree) {
       . <- merge(obs, tree[c("peri", "nrep", "grep", "d", "h", "hka", "alive")], all.x=TRUE)
+      #.$nrep[is.na(.$nrep)] <- 0
+      i <- which(!is.na(.$nrep))
+      if(length(i) > 0) {
+        j <- min(i); if(j > 1) .$nrep[1:(j-1)] <- 0
+        j <- max(i); if(j < nrow(.)) .$nrep[(j+1):nrow(.)] <- 0
+      }
+      #.$grep[is.na(.$grep)] <- 0
+      i <- which(!is.na(.$grep))
+      if(length(i) > 0) {
+        j <- min(i); if(j > 1) .$grep[1:(j-1)] <- 0
+        j <- max(i); if(j < nrow(.)) .$grep[(j+1):nrow(.)] <- 0
+      }
+      for(COL in c("nrep", "grep")) {
+        for(i in seq_len(nrow(.))[-1]) {
+          if(is.na(.[[COL]][i])) .[[COL]][i] <- .[[COL]][i-1]
+        }
+      }
       .$REFn <- .$nrep
       .$REFg <- .$grep
-      .$nrep[is.na(.$nrep)] <- 0
-      .$grep[is.na(.$grep)] <- 0
+      i <- which(.$nrep > 0 | .$grep > 0)
+      .[-i, c("REFn", "REFg")] <- NA
+      j <- if(min(i) > 1) min(i) else NULL
+      k <- if(max(i) < nrow(.)) max(i) else NULL
       for(COL in c("d", "h", "hka", "alive", "REFn", "REFg")) {
-        i <- diff(is.na(.[[COL]]))
-        j <- which(i == -1)
-        .[[COL]][j] <- .[[COL]][j+1]
-        j <- which(i == 1)
-        .[[COL]][j+1] <- .[[COL]][j]
+        .[[COL]][j-1] <- .[[COL]][j]
+        .[[COL]][k+1] <- .[[COL]][k]
       }
       data.frame(plotId
                , treeId = tree$treeId[1]
@@ -140,7 +156,7 @@ nOut <- Db$nout + ifelse(Db$Grepjeha > 0, nrepG * Db$gout / Db$Grepjeha, 0)
 res <- Db[,j] * Ctr[i, k] *  (Db$Nrepjeha + nrepG - nOut) * Db$alive
 
 nt <- which(c(TRUE, Db$plotId[-nrow(Db)] != Db$plotId[-1] | Db$treeId[-nrow(Db)] != Db$treeId[-1]))
-mort <- c(0, diff((Db$Nrepjeha + nrepG) * (1 - Db$alive))) + nOut * (1 - Db$alive)
+mort <- pmax(0, c(0, diff((Db$Nrepjeha + nrepG) * (1 - Db$alive)))) + nOut * (1 - Db$alive)
 mort[nt] <- 0
 #Input from trees which have died and stay in forest
 res <- res + sweep(Db[,j], 2, c(1, 1, 0, 0, 1, 0, .5, 0), `*`) * mort
