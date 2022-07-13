@@ -12,3 +12,9 @@ plot(names(.), ., type="l", xlab="Jahr", ylab="Boden C [tC/ha]", main="Pkt mit d
 . <- . * 120 / .["1990"]
 plot(names(.), ., type="l", xlab="Jahr", ylab="Boden C [tC/ha]", main="Pkt mit Beobachtung im Jahr", ylim=c(0,max(.)))
 
+#1986 - 2016
+j <- colnames(x) %in% 1986:2016
+i <- which(apply(!is.na(x[,j]), 1, all))
+. <- colSums(x[i,j] * y[i,j]) / colSums(y[i,j])
+. <- . * 120 / .["1990"]
+plot(names(.), ., type="l", xlab="Jahr", ylab="Boden C [tC/ha]", main="Pkt mit durchgehender Beobachtung", ylim=c(0,max(.)))

@@ -22,19 +22,20 @@ Dcc <- read.table(fileYassoCC, header=TRUE)
 #t1 <- tapply(Dcc$d * ., Dcc$plotId, sum) / tapply(., Dcc$plotId, sum)
 DM <- (sum(Dcc$d^.5 * .) / sum(.))^2
 #Average inflow
-. <- aggregate(cbind(a, w, e, n) ~ plotId + year, Dcc, sum)
-t2 <- aggregate(cbind(a, w, e, n) ~ plotId, ., mean)
+. <- aggregate(cbind(cIn = rowSums(cbind(a, w, e, n))) ~ plotId + year, Dcc, sum)
+t1 <- aggregate(year ~ plotId, ., min)
+t2 <- .[!paste(.$plotId, .$year) %in% paste(t1$plotId, t1$year),] #Skip first year
 #Mittleres Wetter
 t3 <- apply(Dw, c(1,3), median)
-#
-M <- proportions(colSums(t2[c("a", "w", "e", "n")]))
-. <- rowSums(t2[c("a", "w", "e", "n")])
 i <- match(t2$plotId, dimnames(t3)$plotId)
-#a <- loess(. ~ scale(t3[i,]))
-a <- loess(. ~ t3[i,])
-BC <- mean(.) / mean(pmax(0, predict(a)))
-spInC <- data.frame(t2["plotId"], outer(pmax(0, predict(a)) * BC, M))
+#a <- loess(t2$cIn ~ t2$year + t3[i,])
+. <- data.frame(t2[c("cIn", "year")], t3[i,])
+a <- glm(cIn ~ year + t + p + amp, ., family=quasipoisson(link = "log"))
+M <- proportions(colSums(Dcc[c("a", "w", "e", "n")]))
+i <- match(t1$plotId, dimnames(t3)$plotId)
+spInC <- data.frame(t1["plotId"], outer(predict(a, data.frame(t1["year"], t3[i,]), type="response"), M))
 spInW <- apply(Dw[,dimnames(Dw)$year < 1980,], c(1,3), median)
+
 
 library(Rcpp)
 sourceCpp("y15c_subroutine.cc")
