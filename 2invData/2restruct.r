@@ -202,5 +202,17 @@ write.table(Dt, xzfile("treeInv.txt.xz"), quote = FALSE, row.names = FALSE, col.
 write.table(Dd, xzfile("dateInv.txt.xz"), quote = FALSE, row.names = FALSE, col.names = TRUE)
 
 
+x <- read.table("tfl9.csv.bz2", sep="|", header = TRUE)
+x <- x[-1,]
+x <- type.convert(x, as.is=TRUE)
+x <- x[c("RW", "HW", "PB", "T", "BA", "KG_WALD")]
 
+x <- x[x$BA %in% c(1011, 1013,1021, 1023, 1031, 1033) & x$KG_WALD > 0, ]
+x$plotId <- do.call(paste, c(x[c("RW", "HW", "PB")], sep="_"))
+x <- aggregate(KG_WALD ~ plotId + BA, x, sum)
+write.table(x, xzfile("managentformInv.txt.xz"), quote = FALSE, row.names = FALSE, col.names = TRUE)
 
+table(x$BA)
+. <- split(x$BA, x$plotId)
+table(lengths(.))
+.[lengths(.) == 2]

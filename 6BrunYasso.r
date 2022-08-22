@@ -1,4 +1,4 @@
-fileYassoCC <- "./dat/yassoCC.txt"
+fileYassoCC <- "./dat/yassoCCB.txt"
 fileYassoWetter <- "./dat/yassoWetter.txt"
 
 STARYEAR <- 1980
@@ -24,28 +24,18 @@ yassoTimespan(1)
 res <- lapply(split(Dcc, Dcc$plotId), \(x) {
 #x <- split(Dcc, Dcc$plotId)[[1]]
   i <- match(x$plotId[1], dimnames(Dw)$plotId)
-  .ws <- Dw[i, dimnames(Dw)$year < STARYEAR,]
   .w <- Dw[i, dimnames(Dw)$year >= STARYEAR,]
-  .wsm <- apply(.ws, 2, median)
   rowSums(sapply(split(x, x$d), \(y) {
     #y <- split(x, x$d)[[1]]
-    yassoSet(.wsm["t"], .wsm["p"], .wsm["amp"], y$d, leach)
-    avgCIn <- c(unlist(y[1,c("a", "w", "e", "n")]), h=0)
-    cc <- yassoSpin(avgCIn)
-    #Run using climate of previous years with avgCIn
-    cc <- Reduce(\(cc, i) {
-      yassoSet(.ws[i, "t"], .ws[i, "p"], .ws[i, "amp"], y$d, leach)
-      yassoNext(cc, avgCIn)
-    }, seq_len(nrow(.ws)), cc)
-    do.call(rbind, Reduce(\(cc, i) {
+    CIn <- c(unlist(y[1,c("a", "w", "e", "n")]), h=0)
+    sapply(seq_len(nrow(.w)), function(i) {
       yassoSet(.w[i, "t"], .w[i, "p"], .w[i, "amp"], y$d, leach)
-      yassoNext(cc, avgCIn)
-    }, seq_len(nrow(.w)), cc, accumulate = TRUE)) |>
-    rowSums()
+      sum(yassoSpin(CIn))
+    })
   }))
 })
 
-YR <- dimnames(Dw)$year[dimnames(Dw)$year >= STARYEAR-1]
+YR <- dimnames(Dw)$year[dimnames(Dw)$year >= STARYEAR]
 
 . <- do.call(rbind, res)
 colnames(.) <- YR

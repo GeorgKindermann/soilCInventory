@@ -1,5 +1,5 @@
-OUTfileYassoCC <- "./dat/yassoCCB.txt"
-fileBm2Soil <- "./dat/bm2soilB.txt"
+OUTfileYassoCC <- "./dat/yassoCCC.txt"
+fileBm2Soil <- "./dat/bm2soilC.txt"
 
 Cb2c <- read.csv("./bmExpansion/coefBm2C.csv")
 Dbms <- read.table(fileBm2Soil, header=TRUE)
@@ -41,5 +41,7 @@ rm(tt)
   if(length(i) > 0) x[i,]
   else transform(x[1,], d=0)
 }))
+
+#. <- .[order(.$plotId, .$d, .$year),]
 
 write.table(., OUTfileYassoCC, quote = FALSE, row.names = FALSE, col.names = TRUE)

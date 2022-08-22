@@ -1,5 +1,4 @@
-OUTfileBm <- "./dat/bm2soil.txt"
-OUTfileYassoWetter <- "./dat/yassoWetter.txt"
+OUTfileBm <- "./dat/bm2soilB.txt"
 #pathInvDat <- "./dat/"
 pathInvDat <- "./2invData/"
 fileTemperature <- "./dat/tmInvPkt.txt"
@@ -22,6 +21,7 @@ Dt <- read.table(paste0(pathInvDat, "treeInv.txt.xz"), header=TRUE)
 Dt$alive <- 1
 . <- c("plotId","treeId")
 Dt$alive[Dt$peri > Ds$lastAlivePeri[match(do.call(paste, Dt[.]), do.call(paste, Ds[.]))]] <- 0
+Dt <- Dt[Dt$alive == 1,]
 Dt <- Dt[Dt$peri == 9,]
 Dt$peri <- NULL
 
@@ -53,8 +53,8 @@ nrepG <- ifelse(Db$d > 0, Db$Grepjeha / (Db$d/200)^2 / pi, 0)
 res <- Db[,j] * Ctr[i, k] *  (Db$Nrepjeha + nrepG) * Db$alive
 
 #Input from dead trees in forest
-res <- res + sweep(Db[,j], 2, c(0, 0, 1, 1, 0, 1, 0, 1), `*`) *
-  (Db$Nrepjeha + nrepG) * (1 - Db$alive) / 35 #years as soil inflow
+#res <- res + sweep(Db[,j], 2, c(0, 0, 1, 1, 0, 1, 0, 1), `*`) *
+#  (Db$Nrepjeha + nrepG) * (1 - Db$alive) / 35 #years as soil inflow
 
 write.table(cbind(Db[c("plotId", "treeId", "species", "year", "d")], res),
             OUTfileBm, quote = FALSE, row.names = FALSE, col.names = TRUE)
